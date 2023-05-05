@@ -1,21 +1,24 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.realfinalclient;
 
 import jakarta.websocket.Session;
 
-/**
- *
- * @author helld
- */
 public class MessageSender {
 
     private String message;
+    private Session session;
 
-//    public MessageSender(Session session, String message) throws Exception {
-//        session.getBasicRemote().sendText(message); // send message to server
-//
-//    }
+    public MessageSender(Session session, String message) throws Exception {
+        session.getBasicRemote().sendText(message); // send message to server
+    }
+
+    public MessageSender() {
+        this.session = null;
+        this.message = "";
+    }
+    
+    public static void sendMessage(Session session, String message) throws Exception {
+        session.getBasicRemote().sendText(message); // send message to server
+    }
+    
+    
 }

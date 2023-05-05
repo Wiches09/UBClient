@@ -55,5 +55,6 @@
             <version>5.2.2.RELEASE</version>
             <type>jar</type>
         </dependency>
+        
     </dependencies>
 </project>

@@ -11,16 +11,47 @@ import java.util.Scanner;
 @ClientEndpoint
 public class RealFinalClient {
 
+    protected static Session session;
     private HandlerMethod meth;
+    private MessageSender send;
+    private static String aasd;
+    protected static String username;
+
+    public Session getSession() {
+        return session;
+    }
 
     public static void main(String[] args) throws Exception {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        Session session = container.connectToServer(RealFinalClient.class, new URI("ws://localhost:6000"));
+        RealFinalClient.session = container.connectToServer(RealFinalClient.class, new URI("ws://localhost:6000"));
         System.out.println("Connected(?)");
         UserCollector player = new UserCollector();
 
         Scanner sc = new Scanner(System.in);
-        String username = sc.nextLine();
+        RealFinalClient.username = sc.nextLine();
+
+        while (true) {
+            String hi = sc.nextLine();
+            if (hi.equals("hit")){
+                MessageSender.sendMessage(session, "{\"handler\":\"hit\"}");
+            }
+            else if (hi.equals("debug")) {
+                MessageSender.sendMessage(session, "{\"handler\":\"debug\"}");
+            }
+            else if (hi.equals("ready")) {
+                MessageSender.sendMessage(session, "{\"handler\":\"ready\"}");
+            }
+            else if (hi.equals("stand")) {
+                MessageSender.sendMessage(session, "{\"handler\":\"stand\"}");
+            }
+            else{
+                break;
+            }
+        }
+    }
+
+    public static String getUsername() {
+        return username;
     }
 
     @OnOpen
@@ -28,9 +59,8 @@ public class RealFinalClient {
         System.out.println("Connected? Maybe.");
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter your username.");
-        String username = sc.nextLine();
-        String message = "{\"handler\":\"auth\",\"username\":\"" + username + "\"}";
-        session.getBasicRemote().sendText(message); // send message to server
+        RealFinalClient.username = sc.nextLine();
+        MessageSender.sendMessage(session, "{\"handler\":\"auth\",\"username\":\"" + RealFinalClient.username + "\"}");
 
 //        new MessageSender();
     }
@@ -39,5 +69,6 @@ public class RealFinalClient {
     public void onMessage(String message) throws Exception {
         new MessageReceiver(message);
     }
+    
 
 }
